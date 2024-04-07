@@ -4,17 +4,20 @@
     <title>一个通过Hash鉴权有时效性的信息的小想法</title>
 </head>
 <body>
-    <div id="markdown-content">内容加载中...</div>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div id="markdown-content" style="max-width: 90%; font-size: 24px;">内容加载中...</div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        const content_path = 'content.md';
 
-        async function load_content(path) {
+    <script>
+        const markdown_text = '# 一个通过Hash鉴权有时效性的信息的小想法\n\n创建时间：2024-04-07\n\n更新时间：2024-04-07\n\n## 需求\n\n我们可能会有这样的需求：需要在某一特定时刻 T1 记录下一些内容，然后在将来某个时刻 T2，如果有需要，能够随时证明我们曾经在 T1 时刻记录过相应内容。\n\n比如，我们可以把未发表的学术成果在 T1 时刻记录下来，之后可以在任意 T2 时刻证明我们曾经在 T1 时刻就已经产生相应的学术成果，这样能一定程度避免学术成果偷窃以及各种学术纠纷（如果大家都默认时序最前面的是有效的，并鼓励所有人有成果就及时记录的话）。\n\n## 实现方法\n\n一种最简单的实现方法是用某种Hash函数，比如SHA256，把需要记录的内容C（内容可以是任意）映射成字符串 S，然后把 S 发布在有时效性的平台，同时私下保存一份相同的内容。\n\n对于上面的例子，我们可以把我们的学术成果，加上署名，加上各种其它信息，一起丢给SHA256，然后把输出的S发在某个平台。这样只要我们用的Hash函数是安全的，那就只有我们自己知道原本被hash的内容是什么。我们只需要把私下保存的那一份公开出去，公开出去的原本的内容C在hash后生成S，就能证明我们在T1时刻发布过内容C。'
+
+        const t = '# Title\nsome text\n## Subtitle'
+
+        async function render_markdown_text(text) {
             try {
-                const response = await fetch(path);
-                const markdown_content = await response.text();
-                rendered_content = marked.parse(markdown_content);
+                rendered_content = marked.parse(text);
                 document.getElementById('markdown-content').innerHTML = rendered_content;
             } catch (error) {
                 document.getElementById('markdown-content').innerHTML = '错误...';
@@ -22,7 +25,7 @@
             }
         }
 
-        load_content(content_path)
+        render_markdown_text(markdown_text)
     </script>
 </body>
 </html>
