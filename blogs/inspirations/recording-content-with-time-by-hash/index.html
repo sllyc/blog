@@ -2,25 +2,27 @@
 <head>
     <meta charset="UTF-8">
     <title>一个通过Hash鉴权有时效性的信息的小想法</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div id="markdown-content">内容加载中...</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        const markdownPath = 'content.md';
+        const content_path = 'content.md';
 
-        async function renderMarkdown(path) {
+        async function load_content(path) {
             try {
                 const response = await fetch(path);
-                const markdown = await response.text();
-                document.getElementById('markdown-content').innerHTML = marked(markdown);
+                const markdown_content = await response.text();
+                rendered_content = marked.parse(markdown_content);
+                document.getElementById('markdown-content').innerHTML = rendered_content;
             } catch (error) {
+                document.getElementById('markdown-content').innerHTML = '错误...';
                 console.error('Error fetching markdown content:', error);
             }
         }
 
-        renderMarkdown(markdownPath);
+        load_content(content_path)
     </script>
 </body>
 </html>
