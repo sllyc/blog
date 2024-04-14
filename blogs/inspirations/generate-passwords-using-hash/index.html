@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>通过Hash生成高质量密码</title>
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+        <div id="markdown-content" style="max-width: 90%; font-size: 24px;">内容加载中...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        const markdown_text = '# 通过Hash生成高质量密码\n\n创建时间：2024-04-13&emsp;&emsp;更新时间：2024-04-13\n\n## 应用场景\n\n我们通常需要注册很多各种平台的账号，如果我们不用同一个密码，各种不同的密码就很容易忘。如果用同一个密码，一般也是比较好记的密码，比如生日或手机号，这种密码很容易被猜到。我们可以通过hash轻易生成很多完全不一样的密码，并且这种方式只需要记住一个密码就行了。另外，这种方法实现起来非常简单，不依赖任何环境，可以完全开源。\n\n## 实现方法\n\n实现方法很简单，我们首先创建一个尽量复杂的密码P，这个密码是我们唯一需要记住的密码。然后对于不同的账号，我们记住一个有意义的好记的字串L，比如GitHub，L就可以是“github”。然后P\' = concat(SHA256(concat(P, L))[:12], "Aa1.")就是一个对于L的新的密码。这里生成密码P\'的过程就是先将P和L拼接，然后hash，然后取hash后的字串的前12位，然后再在这12位后面加上“Aa1.”形成一个16位密码。因为hash函数的性质，不同的L生成的密码会完全不同。这样我们就能在只记住一个密码P的情况下，用不同的但好记的字串L，生成完全不同的密码。\n\n后面加上“Aa1.”是因为很多软件要求密码必须包含大小写，数字和特殊字符，单纯hash后的字串不保证能符合要求。这里生成的密码位数也可以更长或更短，不一定要是正好16位。hash也不一定要用SHA256，任何安全的hash函数都行。\n\n## 应用扩展\n\n上述只是描述了一个想法，我们可以在此基础上上进行各种应用扩展，比如：\n- 如果只是针对网页形式的平台的账号，可以直接用域名作为L。在系统层面，如果对于不同应用有唯一标识，也可以把唯一标识作为L。\n- 可以和传统密码记录软件结合，做成前端开源的密码记录软件，后台只记录用户的不同账号的用户名和对应的L，永远不往后台传P，只在用户每次使用时输入P，然后实时本地生成密码P\'。这样后台不知道用户的任何实际密码，也没有在本地存储任何信息，不用担心换手机之类的本地数据转移问题。\n\n还有其它各种各样的应用场景，这里只是描述基本的想法。'
+
+        async function render_markdown_text(text) {
+            try {
+                rendered_content = marked.parse(text);
+                document.getElementById('markdown-content').innerHTML = rendered_content;
+            } catch (error) {
+                document.getElementById('markdown-content').innerHTML = '错误...';
+                console.error('Error fetching markdown content:', error);
+            }
+        }
+
+        render_markdown_text(markdown_text)
+    </script>
+</body>
+</html>
